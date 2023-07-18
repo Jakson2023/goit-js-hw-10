@@ -1,0 +1,18 @@
+.div-wrap {
+    display: flex;
+    width: 800px;
+    margin-top: 20px;
+}
+
+.cat-span {
+    font-weight: bold;
+
+}
+
+.info-div {
+
+    margin-left: 10px;
+    height: auto;
+
+}
+
