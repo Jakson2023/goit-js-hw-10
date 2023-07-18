@@ -35,11 +35,10 @@ breedSelect.addEventListener('change', () => {
   const breedId = breedSelect.value;
 
   fetchCatByBreed(breedId).then(data => {
-    console.log(data);
     if (data === undefined || data.length === 0) {
       return fault();
     }
-    console.log(data);
+
     let dataInfoCat = data[0].breeds[0];
     let { name, description, temperament } = dataInfoCat;
 
