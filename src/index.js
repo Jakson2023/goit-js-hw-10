@@ -9,23 +9,25 @@ const divCatInfo = document.querySelector('.cat-info');
 error.hidden = true;
 breedSelect.hidden = true;
 
-fetchBreeds().then(resp => {
-  if (resp === undefined) {
-    return fault();
-  }
-  let customOption = document.createElement('option');
-  customOption.text = 'Select cat';
-  breedSelect.add(customOption);
+fetchBreeds()
+  .then(resp => {
+    let customOption = document.createElement('option');
+    customOption.text = 'Select cat';
+    breedSelect.add(customOption);
 
-  resp.forEach(element => {
-    let newOpt = document.createElement('option');
-    newOpt.value = element.id;
-    newOpt.text = element.name;
-    breedSelect.add(newOpt);
-    loader.hidden = true;
-    breedSelect.hidden = false;
+    resp.forEach(element => {
+      let newOpt = document.createElement('option');
+      newOpt.value = element.id;
+      newOpt.text = element.name;
+      breedSelect.add(newOpt);
+      loader.hidden = true;
+      breedSelect.hidden = false;
+    });
+  })
+  .catch(resp => {
+    console.log(resp);
+    return faultBreeds();
   });
-});
 
 breedSelect.addEventListener('change', () => {
   loader.hidden = false;
@@ -34,15 +36,12 @@ breedSelect.addEventListener('change', () => {
 
   const breedId = breedSelect.value;
 
-  fetchCatByBreed(breedId).then(data => {
-    if (data === undefined || data.length === 0) {
-      return fault();
-    }
+  fetchCatByBreed(breedId)
+    .then(data => {
+      let dataInfoCat = data[0].breeds[0];
+      let { name, description, temperament } = dataInfoCat;
 
-    let dataInfoCat = data[0].breeds[0];
-    let { name, description, temperament } = dataInfoCat;
-
-    divCatInfo.innerHTML = `
+      divCatInfo.innerHTML = `
      <div class="div-wrap">
      <img class="img" src="${data[0].url}" alt="${name}" width="600" >
      <div class="info-div">
@@ -52,17 +51,26 @@ breedSelect.addEventListener('change', () => {
      </div>
      </div>`;
 
-    let image = new Image();
-    image.onload = function () {
-      loader.hidden = true;
-      divCatInfo.hidden = false;
-    };
-    image.src = data[0].url;
-  });
+      let image = new Image();
+      image.onload = function () {
+        loader.hidden = true;
+        divCatInfo.hidden = false;
+      };
+      image.src = data[0].url;
+    })
+    .catch(err => {
+      console.log(err);
+      faultCatInfo();
+    });
+  return (error.hidden = true);
 });
 
-function fault() {
+function faultBreeds() {
   breedSelect.hidden = true;
+  loader.hidden = true;
+  error.hidden = false;
+}
+function faultCatInfo() {
   loader.hidden = true;
   error.hidden = false;
 }
